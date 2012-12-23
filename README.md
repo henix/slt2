@@ -55,7 +55,7 @@ NOTE: don't specify a cyclic inclusion
 
 ### slt2.render\_co(f, env)
 
-Return a function that, each time you call it, it returns a chunk of the result.
+Return a coroutine function which yields a chunk of result every time. You can `coroutine.create` or `coroutine.wrap` on it.
 
 ### slt2.render(f, env)
 

@@ -10,13 +10,7 @@
 -- Copyright (C) 2012 henix.
 --]]
 
---[[
--- Changelog
---
---	2012-12-20	henix
---		version 2.0
---]]
-slt2 = {}
+local slt2 = {}
 
 -- process included file
 -- @return string
@@ -103,7 +97,7 @@ end
 local mt52 = { __index = _ENV }
 local mt51 = { __index = _G }
 
--- @return a wrapped coroutine
+-- @return a coroutine function
 function slt2.render_co(t, env)
 	local f
 	if setfenv == nil then -- lua 5.2
@@ -117,13 +111,13 @@ function slt2.render_co(t, env)
 		end
 		f = setfenv(t.code, env or _G)
 	end
-	return coroutine.wrap(f)
+	return f
 end
 
 -- @return string
 function slt2.render(t, env)
 	local result = {}
-	local f = slt2.render_co(t, env)
+	local f = coroutine.wrap(slt2.render_co(t, env))
 	local chunk = f()
 	while chunk ~= nil do
 		table.insert(result, chunk)
