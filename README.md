@@ -63,8 +63,15 @@ Return render result as a string.
 
 ## Compatibility
 
-slt2 runs on:
+slt2 has tested on:
 
 * Lua 5.1
 * Lua 5.2
 * luajit 2.0
+
+Other versions of Lua are not tested.
+
+## Links
+
+* [slt](https://code.google.com/p/slt/)
+* [Simple Lua Template 0.1 发布](http://blog.henix.info/blog/simple-lua-template.html) (Chinese)
