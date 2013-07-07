@@ -63,7 +63,7 @@ Return render result as a string.
 
 ## Compatibility
 
-slt2 has tested on:
+slt2 has been tested on:
 
 * Lua 5.1
 * Lua 5.2
