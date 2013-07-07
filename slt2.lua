@@ -75,11 +75,11 @@ function slt2.loadstring(template, start_tag, end_tag, tmpl_name)
 	end
 	table.insert(lua_code, output_func..'('..string.format("%q", string.sub(template, end2 + 1))..')')
 
-	local ret = { name = '=(slt2.loadstring)' }
+	local ret = { name = tmpl_name or '=(slt2.loadstring)' }
 	if setfenv == nil then -- lua 5.2
 		ret.code = table.concat(lua_code, '\n')
 	else -- lua 5.1
-		ret.code = assert(loadstring(table.concat(lua_code, '\n'), tmpl_name))
+		ret.code = assert(loadstring(table.concat(lua_code, '\n'), ret.name))
 	end
 	return ret
 end
