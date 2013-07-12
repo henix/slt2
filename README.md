@@ -24,11 +24,11 @@ function escapeHTML(str)
 end
 
 local tmpl = slt2.loadstring([[<span>
-#{ if user ~= nil then }
-Hello, #{= escapeHTML(user.name) }!
-#{ else }
+#{ if user ~= nil then }#
+Hello, #{= escapeHTML(user.name) }#!
+#{ else }#
 <a href="/login">login</a>
-#{ end }
+#{ end }#
 </span>
 ]])
 
@@ -37,9 +37,9 @@ io.write(slt2.render(tmpl, {user = user}))
 
 ## Template Syntax
 
-* #{ lua code } : embed lua code
-* #{= expression } : embed lua expression
-* #{include: 'file' } : include another template
+* #{ lua code }# : embed lua code
+* #{= expression }# : embed lua expression
+* #{include: 'file' }# : include another template
 
 NOTE: don't specify a cyclic inclusion
 

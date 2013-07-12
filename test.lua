@@ -15,11 +15,11 @@ function escapeHTML(str)
 end
 
 local tmpl = slt2.loadstring([[<span>
-#{ if user ~= nil then }
-Hello, #{= escapeHTML(user.name) }!
-#{ else }
+#{ if user ~= nil then }#
+Hello, #{= escapeHTML(user.name) }#!
+#{ else }#
 <a href="/login">login</a>
-#{ end }
+#{ end }#
 </span>
 ]])
 
