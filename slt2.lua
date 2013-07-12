@@ -7,7 +7,7 @@
 -- MIT License
 --
 -- @Copyright
--- Copyright (C) 2012 henix.
+-- Copyright (C) 2012-2013 henix.
 --]]
 
 local slt2 = {}
@@ -48,7 +48,7 @@ function slt2.loadstring(template, start_tag, end_tag, tmpl_name)
 	local lua_code = {}
 
 	start_tag = start_tag or '#{'
-	end_tag = end_tag or ' }'
+	end_tag = end_tag or '}#'
 
 	local output_func = "coroutine.yield"
 
