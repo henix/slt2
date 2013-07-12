@@ -51,7 +51,7 @@ NOTE: don't specify a cyclic inclusion
 "Compile" the template from a string or a file, return compiled object.
 
 * start_tag: default "#{"
-* end_tag: default " }" NOTE: there is a **space** before "}". This is to allow table definition like "t = {}" in the embedded lua code.
+* end_tag: default "}#"
 
 ### slt2.render\_co(f, env)
 
