@@ -42,7 +42,7 @@ local function precompile(template, start_tag, end_tag)
 	return table.concat(result)
 end
 
--- @return function
+-- @return { name = string, code = string / function}
 function slt2.loadstring(template, start_tag, end_tag, tmpl_name)
 	-- compile it to lua code
 	local lua_code = {}
@@ -84,7 +84,7 @@ function slt2.loadstring(template, start_tag, end_tag, tmpl_name)
 	return ret
 end
 
--- @return function
+-- @return { name = string, code = string / function }
 function slt2.loadfile(filename, start_tag, end_tag)
 	local fin = assert(io.open(filename))
 	local all = fin:read('*a')
