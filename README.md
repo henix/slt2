@@ -61,6 +61,10 @@ Return a coroutine function which yields a chunk of result every time. You can `
 
 Return render result as a string.
 
+## Standalone command
+
+See `runslt2.lua`, to install, link it in your path.
+
 ## Compatibility
 
 slt2 has been tested on:
