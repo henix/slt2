@@ -117,11 +117,13 @@ end
 -- @return string
 function slt2.render(t, env)
 	local result = {}
-	local f = coroutine.wrap(slt2.render_co(t, env))
-	local chunk = f()
-	while chunk ~= nil do
+	local co = coroutine.create(slt2.render_co(t, env))
+	while coroutine.status(co) ~= 'dead' do
+		local ok, chunk = coroutine.resume(co)
+		if not ok then
+			error(chunk)
+		end
 		table.insert(result, chunk)
-		chunk = f()
 	end
 	return table.concat(result)
 end
