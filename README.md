@@ -63,7 +63,9 @@ Return render result as a string.
 
 ## Standalone command
 
-See `runslt2.lua`, to install, link it in your path.
+See `runslt2.lua`.
+
+To install, create a symbolic link to it in your path.
 
 ## Compatibility
 
