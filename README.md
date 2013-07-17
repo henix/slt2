@@ -61,7 +61,7 @@ Return a coroutine function which yields a chunk of result every time. You can `
 
 Return render result as a string.
 
-## Standalone command
+## Standalone commands
 
 * runslt2.lua : render a template with a lua table value
 * slt2pp.lua : preprocess a template (inline included files)
