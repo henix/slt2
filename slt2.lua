@@ -12,10 +12,13 @@
 
 local slt2 = {}
 
--- process included file
--- @return string
-local function precompile(template, start_tag, end_tag)
-	local result = {}
+-- a tree fold on inclusion tree
+-- @param init_func: must return a new value when called
+local function include_fold(template, start_tag, end_tag, fold_func, init_func)
+	local result = init_func()
+
+	start_tag = start_tag or '#{'
+	end_tag = end_tag or '}#'
 	local start_tag_inc = start_tag..'include:'
 
 	local start1, end1 = string.find(template, start_tag_inc, 1, true)
@@ -24,7 +27,7 @@ local function precompile(template, start_tag, end_tag)
 
 	while start1 ~= nil do
 		if start1 > end2 + 1 then -- for beginning part of file
-			table.insert(result, string.sub(template, end2 + 1, start1 - 1))
+			result = fold_func(result, string.sub(template, end2 + 1, start1 - 1))
 		end
 		start2, end2 = string.find(template, end_tag, end1 + 1, true)
 		assert(start2, 'end tag "'..end_tag..'" missing')
@@ -33,13 +36,59 @@ local function precompile(template, start_tag, end_tag)
 			assert(filename)
 			local fin = assert(io.open(filename))
 			-- TODO: detect cyclic inclusion?
-			table.insert(result, precompile(fin:read('*a'), start_tag, end_tag))
+			result = fold_func(result, include_fold(fin:read('*a'), start_tag, end_tag, fold_func, init_func), filename)
 			fin:close()
 		end
 		start1, end1 = string.find(template, start_tag_inc, end2 + 1, true)
 	end
-	table.insert(result, string.sub(template, end2 + 1))
-	return table.concat(result)
+	result = fold_func(result, string.sub(template, end2 + 1))
+	return result
+end
+
+-- preprocess included files
+-- @return string
+function slt2.precompile(template, start_tag, end_tag)
+	return table.concat(include_fold(template, start_tag, end_tag, function(acc, v)
+		if type(v) == 'string' then
+			table.insert(acc, v)
+		elseif type(v) == 'table' then
+			table.insert(acc, table.concat(v))
+		else
+			error('Unknown type: '..type(v))
+		end
+		return acc
+	end, function() return {} end))
+end
+
+-- unique a list, preserve order
+local function stable_uniq(t)
+	local existed = {}
+	local res = {}
+	for _, v in ipairs(t) do
+		if not existed[v] then
+			table.insert(res, v)
+			existed[v] = true
+		end
+	end
+	return res
+end
+
+-- @return { string }
+function slt2.get_dependency(template, start_tag, end_tag)
+	return stable_uniq(include_fold(template, start_tag, end_tag, function(acc, v, name)
+		if type(v) == 'string' then
+		elseif type(v) == 'table' then
+			if name ~= nil then
+				table.insert(acc, name)
+			end
+			for _, subname in ipairs(v) do
+				table.insert(acc, subname)
+			end
+		else
+			error('Unknown type: '..type(v))
+		end
+		return acc
+	end, function() return {} end))
 end
 
 -- @return { name = string, code = string / function}
@@ -52,7 +101,7 @@ function slt2.loadstring(template, start_tag, end_tag, tmpl_name)
 
 	local output_func = "coroutine.yield"
 
-	template = precompile(template, start_tag, end_tag)
+	template = slt2.precompile(template, start_tag, end_tag)
 
 	local start1, end1 = string.find(template, start_tag, 1, true)
 	local start2 = nil
