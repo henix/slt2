@@ -138,9 +138,7 @@ function slt2.loadfile(filename, start_tag, end_tag)
 	local fin = assert(io.open(filename))
 	local all = fin:read('*a')
 	fin:close()
-	local ret = slt2.loadstring(all, start_tag, end_tag, filename)
-	ret.name = filename
-	return ret
+	return slt2.loadstring(all, start_tag, end_tag, filename)
 end
 
 local mt52 = { __index = _ENV }
