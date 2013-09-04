@@ -1,6 +1,6 @@
 # slt2
 
-slt2 is a Lua template processor.
+slt2 is a Lua template processor. Similar to php or jsp, you can embed lua code directly.
 
 ## Example
 
