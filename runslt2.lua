@@ -7,9 +7,6 @@
 --
 -- @License
 -- MIT License
---
--- @Copyright
--- Copyright (C) 2012-2013 henix.
 --]]
 
 local slt2 = require('slt2')

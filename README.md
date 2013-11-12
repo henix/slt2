@@ -81,5 +81,12 @@ Other versions of Lua are not tested.
 
 ## Links
 
-* [slt](https://code.google.com/p/slt/)
 * [Simple Lua Template 0.1 发布](http://blog.henix.info/blog/simple-lua-template.html) (Chinese)
+
+## License
+
+MIT License
+
+## Contribute
+
+Please create an issue, explaining what's the problem you are trying to solve, before you send a pull request. See issue #5 for an example.
