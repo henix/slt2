@@ -15,12 +15,14 @@ local user = {
 
 function escapeHTML(str)
 	local tt = {
+		['&'] = '&amp;',
 		['<'] = '&lt;',
-		['>'] = '&gt;'
+		['>'] = '&gt;',
+		['"'] = '&quot;',
+		["'"] = '&#39;',
 	}
-	str = string.gsub(str, '&', '&amp;')
-	str = string.gsub(str, '[<>]', tt)
-	return str
+	local r = string.gsub(str, '[&<>"\']', tt)
+	return r
 end
 
 local tmpl = slt2.loadstring([[<span>
@@ -81,7 +83,7 @@ Other versions of Lua are not tested.
 
 ## Links
 
-* [Simple Lua Template 0.1 发布](http://blog.henix.info/blog/simple-lua-template.html) (Chinese)
+* [Simple Lua Template](http://blog.henix.info/works/simple-lua-template/_.html) (Chinese)
 
 ## License
 

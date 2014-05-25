@@ -6,12 +6,14 @@ local user = {
 
 function escapeHTML(str)
 	local tt = {
+		['&'] = '&amp;',
 		['<'] = '&lt;',
-		['>'] = '&gt;'
+		['>'] = '&gt;',
+		['"'] = '&quot;',
+		["'"] = '&#39;',
 	}
-	str = string.gsub(str, '&', '&amp;')
-	str = string.gsub(str, '[<>]', tt)
-	return str
+	local r = string.gsub(str, '[&<>"\']', tt)
+	return r
 end
 
 local tmpl = slt2.loadstring([[<span>
