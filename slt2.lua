@@ -88,6 +88,12 @@ function slt2.get_dependency(template, start_tag, end_tag)
 	end, function() return {} end))
 end
 
+-- escape a string for use in lua patterns
+-- (this simply prepends all non alphanumeric characters with '%'
+local function escape_pattern(text)
+	return text:gsub("([^%w])", "%%%1" --[[function (match) return "%"..match end--]])
+end
+
 -- @return { name = string, code = string / function}
 function slt2.loadstring(template, start_tag, end_tag, tmpl_name)
 	-- compile it to lua code
