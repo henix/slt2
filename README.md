@@ -2,6 +2,12 @@
 
 slt2 is a Lua template processor. Similar to php or jsp, you can embed lua code directly.
 
+## Installation
+
+```
+luarocks install slt2
+```
+
 ## Example
 
 see test.lua
@@ -10,19 +16,19 @@ see test.lua
 local slt2 = require('slt2')
 
 local user = {
-	name = '<world>'
+  name = '<world>'
 }
 
 function escapeHTML(str)
-	local tt = {
-		['&'] = '&amp;',
-		['<'] = '&lt;',
-		['>'] = '&gt;',
-		['"'] = '&quot;',
-		["'"] = '&#39;',
-	}
-	local r = string.gsub(str, '[&<>"\']', tt)
-	return r
+  local tt = {
+    ['&'] = '&amp;',
+    ['<'] = '&lt;',
+    ['>'] = '&gt;',
+    ['"'] = '&quot;',
+    ["'"] = '&#39;',
+  }
+  local r = string.gsub(str, '[&<>"\']', tt)
+  return r
 end
 
 local tmpl = slt2.loadstring([[<span>
@@ -83,7 +89,7 @@ Other versions of Lua are not tested.
 
 ## Links
 
-* [Simple Lua Template](http://blog.henix.info/works/simple-lua-template/_.html) (Chinese)
+* [Simple Lua Template](https://blog.henix.info/blog/simple-lua-template/_.html) (Chinese)
 
 ## License
 
