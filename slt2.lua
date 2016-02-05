@@ -58,6 +58,31 @@ local function parse_string_literal(string_literal)
 	return f()
 end
 
+-- splits a template into chunks
+-- chunks are either a template delimited by start_tag and end_tag
+-- or a text chunk (everything else)
+-- @return table
+function slt2.lex(template, start_tag, end_tag, output)
+	local output = output or {}
+	local include_pattern = "^" .. escape_pattern(start_tag) .. "include:(.-)" .. escape_pattern(end_tag)
+
+	for chunk in all_chunks(template, start_tag, end_tag) do
+		-- handle includes
+		local include_path_literal = chunk:match(include_pattern)
+		if include_path_literal then -- include chunk
+			local path = parse_string_literal(include_path_literal)
+			local included_template = read_entire_file(path)
+			slt2.lex(included_template, start_tag, end_tag, output)
+			-- FIXME: This can result in 2 text chunks following each other
+		else -- other chunk
+			table.insert(output, chunk)
+		end
+
+	end
+
+	return output
+end
+
 -- a tree fold on inclusion tree
 -- @param init_func: must return a new value when called
 local function include_fold(template, start_tag, end_tag, fold_func, init_func)
