@@ -53,13 +53,14 @@ NOTE: don't specify a cyclic inclusion
 
 ## API Reference
 
-### slt2.loadstring(template, start\_tag, end\_tag, tmpl\_name)
-### slt2.loadfile(filename, start\_tag, end\_tag)
+### slt2.loadstring(template, start\_tag, end\_tag, tmpl\_name, omit\_code\_lines)
+### slt2.loadfile(filename, start\_tag, end\_tag, omit\_code\_lines)
 
 "Compile" the template from a string or a file, return compiled object.
 
 * start_tag: default "#{"
 * end_tag: default "}#"
+* omit_code_lines: if set to `true`, slt2 won't output empty lines for lines that only contain lua code
 
 ### slt2.render\_co(f, env)
 

@@ -88,8 +88,14 @@ function slt2.get_dependency(template, start_tag, end_tag)
 	end, function() return {} end))
 end
 
+-- escape a string for use in lua patterns
+-- (this simply prepends all non alphanumeric characters with '%'
+local function escape_pattern(text)
+	return text:gsub("([^%w])", "%%%1")
+end
+
 -- @return { name = string, code = string / function}
-function slt2.loadstring(template, start_tag, end_tag, tmpl_name)
+function slt2.loadstring(template, start_tag, end_tag, tmpl_name, omit_code_lines)
 	-- compile it to lua code
 	local lua_code = {}
 
@@ -99,6 +105,27 @@ function slt2.loadstring(template, start_tag, end_tag, tmpl_name)
 	local output_func = "coroutine.yield"
 
 	template = slt2.precompile(template, start_tag, end_tag)
+
+	-- if enabled, don't output empty lines for lines that only contain code templates
+	if omit_code_lines then
+		local new_template = ""
+
+		--pattern to match all lines that only contain one code template
+		local pattern = "^%s*("..escape_pattern(start_tag).."[^=].-"..escape_pattern(end_tag)..")%s*$"
+
+		-- go through all lines in the template
+		for line in template:gmatch("(.-)\n") do
+			local match = line:match(pattern)
+
+			if match then
+				new_template = new_template..match
+			else
+				new_template = new_template..line.."\n"
+			end
+		end
+
+		template = new_template
+	end
 
 	local start1, end1 = string.find(template, start_tag, 1, true)
 	local start2 = nil
@@ -131,11 +158,11 @@ function slt2.loadstring(template, start_tag, end_tag, tmpl_name)
 end
 
 -- @return { name = string, code = string / function }
-function slt2.loadfile(filename, start_tag, end_tag)
+function slt2.loadfile(filename, start_tag, end_tag, omit_code_lines)
 	local fin = assert(io.open(filename))
 	local all = fin:read('*a')
 	fin:close()
-	return slt2.loadstring(all, start_tag, end_tag, filename)
+	return slt2.loadstring(all, start_tag, end_tag, filename, omit_code_lines)
 end
 
 local mt52 = { __index = _ENV }
