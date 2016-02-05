@@ -9,6 +9,12 @@
 
 local slt2 = {}
 
+-- escape a string for use in lua patterns
+-- (this simply prepends all non alphanumeric characters with '%'
+local function escape_pattern(text)
+	return text:gsub("([^%w])", "%%%1" --[[function (match) return "%"..match end--]])
+end
+
 -- a tree fold on inclusion tree
 -- @param init_func: must return a new value when called
 local function include_fold(template, start_tag, end_tag, fold_func, init_func)
@@ -86,12 +92,6 @@ function slt2.get_dependency(template, start_tag, end_tag)
 		end
 		return acc
 	end, function() return {} end))
-end
-
--- escape a string for use in lua patterns
--- (this simply prepends all non alphanumeric characters with '%'
-local function escape_pattern(text)
-	return text:gsub("([^%w])", "%%%1" --[[function (match) return "%"..match end--]])
 end
 
 -- @return { name = string, code = string / function}
