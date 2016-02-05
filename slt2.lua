@@ -111,7 +111,7 @@ function slt2.loadstring(template, start_tag, end_tag, tmpl_name, omit_code_line
 		local new_template = ""
 
 		--pattern to match all lines that only contain one code template
-		local pattern = "^%s*("..escape_pattern(start_tag)..".-"..escape_pattern(end_tag)..")%s*$"
+		local pattern = "^%s*("..escape_pattern(start_tag).."[^=].-"..escape_pattern(end_tag)..")%s*$"
 
 		-- go through all lines in the template
 		for line in template:gmatch("(.-)\n") do
