@@ -44,6 +44,14 @@ local function all_chunks(template, start_tag, end_tag)
 	end
 end
 
+local function read_entire_file(path)
+	assert(path)
+	local file = assert(io.open(path))
+	local file_content = file:read('*a')
+	file:close()
+	return file_content
+end
+
 -- a tree fold on inclusion tree
 -- @param init_func: must return a new value when called
 local function include_fold(template, start_tag, end_tag, fold_func, init_func)
