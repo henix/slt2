@@ -163,53 +163,54 @@ function slt2.get_dependency(template, start_tag, end_tag)
 end
 
 -- @return { name = string, code = string / function}
-function slt2.loadstring(template, start_tag, end_tag, tmpl_name)
-	-- compile it to lua code
+function slt2.loadstring(template, template_name, options)
+	options = options or {}
+	options.start_tag = options.start_tag or '#{'
+	options.end_tag = options.end_tag or '}#'
+	options.template_name = template_name or '=(slt2.loadstring)'
+
+	local output_function = "coroutine.yield"
+
+	-- split the template string into chunks
+	local lexed_template = slt2.lex(template, options.start_tag, options.end_tag)
+
+	-- pattern to match different kinds of templates
+	local expression_pattern = escape_pattern(options.start_tag) .. "=(.-)" .. escape_pattern(options.end_tag)
+	local code_pattern = escape_pattern(options.start_tag) .. "([^=].-)" .. escape_pattern(options.end_tag)
+
+	-- table of code fragments the template is compiled into
 	local lua_code = {}
 
-	start_tag = start_tag or '#{'
-	end_tag = end_tag or '}#'
+	for i, chunk in ipairs(lexed_template) do
+		-- check if the chunk is a template (either code or expression)
+		local expression = chunk:match(expression_pattern)
+		local code = expression and nil or chunk:match(code_pattern)
 
-	local output_func = "coroutine.yield"
-
-	template = slt2.precompile(template, start_tag, end_tag)
-
-	local start1, end1 = string.find(template, start_tag, 1, true)
-	local start2 = nil
-	local end2 = 0
-
-	local cEqual = string.byte('=', 1)
-
-	while start1 ~= nil do
-		if start1 > end2 + 1 then
-			table.insert(lua_code, output_func..'('..string.format("%q", string.sub(template, end2 + 1, start1 - 1))..')')
-		end
-		start2, end2 = string.find(template, end_tag, end1 + 1, true)
-		assert(start2, 'end_tag "'..end_tag..'" missing')
-		if string.byte(template, end1 + 1) == cEqual then
-			table.insert(lua_code, output_func..'('..string.sub(template, end1 + 2, start2 - 1)..')')
+		if expression then
+			table.insert(lua_code, output_function..'('..expression..')')
+		elseif code then
+			table.insert(lua_code, code)
 		else
-			table.insert(lua_code, string.sub(template, end1 + 1, start2 - 1))
+			table.insert(lua_code, output_function..'('..string.format("%q", chunk)..')')
 		end
-		start1, end1 = string.find(template, start_tag, end2 + 1, true)
 	end
-	table.insert(lua_code, output_func..'('..string.format("%q", string.sub(template, end2 + 1))..')')
 
-	local ret = { name = tmpl_name or '=(slt2.loadstring)' }
-	if setfenv == nil then -- lua 5.2
-		ret.code = table.concat(lua_code, '\n')
-	else -- lua 5.1
-		ret.code = assert(loadstring(table.concat(lua_code, '\n'), ret.name))
-	end
-	return ret
+	local complete_template = {
+		name = options.template_name,
+		code = table.concat(lua_code, '\n') --TODO: Check if this works with Lua 5.1
+	}
+
+	return complete_template
 end
 
 -- @return { name = string, code = string / function }
 function slt2.loadfile(filename, start_tag, end_tag)
-	local fin = assert(io.open(filename))
-	local all = fin:read('*a')
-	fin:close()
-	return slt2.loadstring(all, start_tag, end_tag, filename)
+	local file_content = read_entire_file(filename)
+	local options = {
+		start_tag = start_tag,
+		end_tag = end_tag
+	}
+	return slt2.loadstring(file_content, filename, options)
 end
 
 local mt52 = { __index = _ENV }
