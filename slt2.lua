@@ -15,6 +15,35 @@ local function escape_pattern(text)
 	return text:gsub("([^%w])", "%%%1" --[[function (match) return "%"..match end--]])
 end
 
+-- creates an iterator that iterates over all chunks in the given template
+-- a chunk is either a template delimited by start_tag and end_tag or a normal text
+local function all_chunks(template, start_tag, end_tag)
+	-- pattern to match a template chunk
+	local pattern = escape_pattern(start_tag) .. ".-" .. escape_pattern(end_tag)
+	local position = 1
+
+	return function ()
+		if not position then
+			return nil
+		end
+
+		local template_start, template_end = template:find(pattern, position)
+
+		if template_start == position then -- next chunk is a template chunk
+			position = template_end + 1
+			return template:sub(template_start, template_end)
+		elseif template_start then -- next chunk is a text chunk
+			local chunk = template:sub(position, template_start - 1)
+			position = template_start
+			return chunk
+		else -- no template chunk found --> either text chunk until end of file or no chunk at all
+			chunk = template:sub(position)
+			position = nil
+			return (#chunk > 0) and chunk or nil
+		end
+	end
+end
+
 -- a tree fold on inclusion tree
 -- @param init_func: must return a new value when called
 local function include_fold(template, start_tag, end_tag, fold_func, init_func)
