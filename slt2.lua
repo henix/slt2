@@ -204,13 +204,8 @@ function slt2.loadstring(template, template_name, options)
 end
 
 -- @return { name = string, code = string / function }
-function slt2.loadfile(filename, start_tag, end_tag)
-	local file_content = read_entire_file(filename)
-	local options = {
-		start_tag = start_tag,
-		end_tag = end_tag
-	}
-	return slt2.loadstring(file_content, filename, options)
+function slt2.loadfile(filename, options)
+	return slt2.loadstring(read_entire_file(filename), filename, options)
 end
 
 local mt52 = { __index = _ENV }
