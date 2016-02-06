@@ -87,39 +87,6 @@ function slt2.lex(template, start_tag, end_tag, output, include_list)
 	return output
 end
 
--- a tree fold on inclusion tree
--- @param init_func: must return a new value when called
-local function include_fold(template, start_tag, end_tag, fold_func, init_func)
-	local result = init_func()
-
-	start_tag = start_tag or '#{'
-	end_tag = end_tag or '}#'
-	local start_tag_inc = start_tag..'include:'
-
-	local start1, end1 = string.find(template, start_tag_inc, 1, true)
-	local start2 = nil
-	local end2 = 0
-
-	while start1 ~= nil do
-		if start1 > end2 + 1 then -- for beginning part of file
-			result = fold_func(result, string.sub(template, end2 + 1, start1 - 1))
-		end
-		start2, end2 = string.find(template, end_tag, end1 + 1, true)
-		assert(start2, 'end tag "'..end_tag..'" missing')
-		do -- recursively include the file
-			local filename = assert(loadstring('return '..string.sub(template, end1 + 1, start2 - 1)))()
-			assert(filename)
-			local fin = assert(io.open(filename))
-			-- TODO: detect cyclic inclusion?
-			result = fold_func(result, include_fold(fin:read('*a'), start_tag, end_tag, fold_func, init_func), filename)
-			fin:close()
-		end
-		start1, end1 = string.find(template, start_tag_inc, end2 + 1, true)
-	end
-	result = fold_func(result, string.sub(template, end2 + 1))
-	return result
-end
-
 -- preprocess included files
 -- @return string
 function slt2.precompile(template, start_tag, end_tag)
