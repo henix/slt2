@@ -73,10 +73,14 @@ function slt2.lex(template, start_tag, end_tag, output, include_list)
 		if include_path_literal then -- include chunk
 			local path = parse_string_literal(include_path_literal)
 
+			if include_list[path] then
+				error("Cyclic include detected!")
+			end
+			include_list[path] = true -- in order to detect dependency cycles
 			table.insert(include_list, path) -- to get a list of included files
 
 			local included_template = read_entire_file(path)
-			slt2.lex(included_template, start_tag, end_tag, output)
+			slt2.lex(included_template, start_tag, end_tag, output, include_list)
 			-- FIXME: This can result in 2 text chunks following each other
 		else -- other chunk
 			table.insert(output, chunk)
