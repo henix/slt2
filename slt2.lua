@@ -62,7 +62,8 @@ end
 -- chunks are either a template delimited by start_tag and end_tag
 -- or a text chunk (everything else)
 -- @return table
-function slt2.lex(template, start_tag, end_tag, output)
+function slt2.lex(template, start_tag, end_tag, output, include_list)
+	include_list = include_list or {} -- a list of files that were included
 	local output = output or {}
 	local include_pattern = "^" .. escape_pattern(start_tag) .. "include:(.-)" .. escape_pattern(end_tag)
 
@@ -71,6 +72,9 @@ function slt2.lex(template, start_tag, end_tag, output)
 		local include_path_literal = chunk:match(include_pattern)
 		if include_path_literal then -- include chunk
 			local path = parse_string_literal(include_path_literal)
+
+			table.insert(include_list, path) -- to get a list of included files
+
 			local included_template = read_entire_file(path)
 			slt2.lex(included_template, start_tag, end_tag, output)
 			-- FIXME: This can result in 2 text chunks following each other
@@ -140,20 +144,11 @@ end
 
 -- @return { string }
 function slt2.get_dependency(template, start_tag, end_tag)
-	return stable_uniq(include_fold(template, start_tag, end_tag, function(acc, v, name)
-		if type(v) == 'string' then
-		elseif type(v) == 'table' then
-			if name ~= nil then
-				table.insert(acc, name)
-			end
-			for _, subname in ipairs(v) do
-				table.insert(acc, subname)
-			end
-		else
-			error('Unknown type: '..type(v))
-		end
-		return acc
-	end, function() return {} end))
+	start_tag = start_tag or '#{'
+	end_tag = end_tag or '}#'
+	local include_list = {}
+	slt2.lex(template, start_tag, end_tag, nil, include_list)
+	return stable_uniq(include_list)
 end
 
 -- @return { name = string, code = string / function}
