@@ -69,11 +69,7 @@ Return render result as a string.
 
 ## Standalone commands
 
-* runslt2.lua : render a template with a lua table value
-* slt2pp.lua : preprocess a template (inline included files)
-* slt2dep.lua : output dependencies of a template file (the included files, like -MD option of gcc)
-
-To install, create a symbolic link to them in your path.
+* runslt2: render a template with a lua table value
 
 ## Compatibility
 
