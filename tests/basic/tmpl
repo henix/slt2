@@ -1,0 +1,7 @@
+<span>
+#{ if user ~= nil then }#
+Hello, #{= escapeHTML(user.name) }#!
+#{ else }#
+<a href="/login">login</a>
+#{ end }#
+</span>

@@ -10,8 +10,6 @@ luarocks install slt2
 
 ## Example
 
-see test.lua
-
 ```lua
 local slt2 = require('slt2')
 
@@ -98,3 +96,5 @@ MIT License
 ## Contribute
 
 Please create an issue, explaining what's the problem you are trying to solve, before you send a pull request. See [issue #5](https://github.com/henix/slt2/issues/5) for an example.
+
+Run tests: `./tests.sh`.
