@@ -93,4 +93,5 @@ MIT License
 
 Please create an issue, explaining what's the problem you are trying to solve, before you send a pull request. See [issue #5](https://github.com/henix/slt2/issues/5) for an example.
 
-Run tests: `./tests.sh`.
+* Run tests: `./tests.sh`
+* Run tests for different lua implementation: `LUA=luajit ./tests.sh`
