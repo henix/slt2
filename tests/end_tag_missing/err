@@ -1,0 +1,1 @@
+fgrep -q 'end_tag "}#" missing'
