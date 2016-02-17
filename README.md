@@ -95,3 +95,10 @@ Please create an issue, explaining what's the problem you are trying to solve, b
 
 * Run tests: `./tests.sh`
 * Run tests for different lua implementation: `LUA=luajit ./tests.sh`
+
+## Related work
+
+Other Lua template engines:
+
+* [liluat](https://github.com/FSMaxB/liluat)
+* [lustache](https://github.com/Olivine-Labs/lustache)
