@@ -83,7 +83,7 @@ Other versions of Lua are not tested.
 
 ## Links
 
-* [Simple Lua Template](https://blog.henix.info/blog/simple-lua-template/_.html) (Chinese)
+* [Simple Lua Template](https://blog.henix.info/blog/simple-lua-template/) (Chinese)
 
 ## License
 
