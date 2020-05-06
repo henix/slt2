@@ -9,6 +9,9 @@
 
 local slt2 = {}
 
+-- Assure compat with Lua 5.3
+local loadstring = loadstring or load
+
 -- a tree fold on inclusion tree
 -- @param init_func: must return a new value when called
 local function include_fold(template, start_tag, end_tag, fold_func, init_func)
